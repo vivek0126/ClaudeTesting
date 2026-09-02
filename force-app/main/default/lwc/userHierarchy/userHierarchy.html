@@ -1,0 +1,32 @@
+<template>
+    <template if:true={users}>
+        <lightning-accordion allow-multiple-sections>
+            <template for:each={users} for:item="user">
+                <lightning-accordion-section 
+                    key={user.Id}
+                    data-userid={user.Id} 
+                    onclick={onclickUser} 
+                    label={user.Name}>
+                                     
+                    <template lwc:if={isLoading}>
+                        <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+                    </template>
+                    <template lwc:if={managerUsers.length}>
+                       
+                        <ul style="list-style-type: disc; padding-left: 20px;">
+                            <template for:each={managerUsers} for:item="managerUser">
+                                <li key={managerUser.Id}>{managerUser.Name}</li>
+                                  
+                            </template>
+                        </ul>
+                    </template>
+                     <template lwc:else><p>This User doesn't have any reporties</p> </template>
+                    
+                </lightning-accordion-section>
+            </template>
+        </lightning-accordion>
+    </template>
+    <template if:true={error}>
+        <p>Error: {error.body.message}</p>
+    </template>
+</template>

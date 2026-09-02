@@ -1,0 +1,49 @@
+<template>
+    <lightning-card title="Select Devices">
+        <div class="slds-m-around_medium">
+            <lightning-checkbox-group
+                label="Available Devices"
+                options={deviceOptions}
+                value={selectedDevices}
+                onchange={handleDeviceChange}>
+            </lightning-checkbox-group>
+        </div>
+        
+        <template if:true={showDeviceDetails}>
+            <div class="slds-m-around_medium">
+                <p><strong>Model:</strong> {currentDevice.Model}</p>
+                <lightning-combobox
+                    name="PhoneColor"
+                    label="Select Phone Color"
+                    value={selectedColor}
+                    placeholder="Select Phone Color"
+                    options={currentDevice.Colors}
+                    onchange={handleColorChange}>
+                </lightning-combobox>
+                <lightning-combobox
+                    name="PhoneSize"
+                    label="Select Phone Size"
+                    value={selectedSize}
+                    placeholder="Select Phone Size"
+                    options={currentDevice.Sizes}
+                    onchange={handleSizeChange}>
+                </lightning-combobox>
+            </div>
+        </template>
+
+        <div class="slds-m-top_medium slds-grid slds-wrap">
+            <lightning-button
+                label="Previous"
+                onclick={handlePrevious}
+                disabled={isFirstScreen}
+                class="slds-col slds-size_1-of-2">
+            </lightning-button>
+            <lightning-button
+                label="Next"
+                onclick={handleNext}
+                disabled={isLastScreen}
+                class="slds-col slds-size_1-of-2">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

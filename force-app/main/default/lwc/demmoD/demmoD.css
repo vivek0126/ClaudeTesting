@@ -1,0 +1,37 @@
+.slds-modal__container {
+    max-width: 80% !important;   /* Increases modal width */
+    width: 80% !important;
+    height: 80vh !important;     /* Increases modal height */
+    max-height: 90vh !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.slds-modal__content {
+    flex-grow: 1;                 /* Expands content area */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes content towards footer */
+    overflow-y: auto;             /* Ensures scrolling when needed */
+}
+
+.footer-container {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px 0;
+    width: 100%;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+.slds-modal__header {
+    background-color: #0070d2 !important; /* Salesforce blue */
+    color: white !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    padding: 15px 20px !important;
+    text-align: center !important;
+    border-bottom: 2px solid #005fb2 !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

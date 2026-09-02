@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>63.0</apiVersion>
+	<description>RADPB-2382</description>
+	<isExposed>true</isExposed>
+	<targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+
+            <!-- Input from Flow: Account Id -->
+            <property
+                name="accountIdFromFlow"
+                type="String"
+                label="Account Id for Filtering"
+                description="Flow will pass the Account Id used to filter Associated Location records."/>
+
+            <!-- Output to Flow: Selected Location Id -->
+            <property
+                name="SelectedLocation"
+                type="String"
+                role="outputOnly"
+                label="Selected Associated Location Id"
+                description="The Id of the location selected by the user."/>
+
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

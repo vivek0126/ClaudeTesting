@@ -1,0 +1,14 @@
+<template>
+   
+        <div class="slds-p-around_medium">
+            <lightning-record-picker
+                label="Select Contact"
+                placeholder="Search Contacts"
+                object-api-name="Contact"
+               
+                value={selectedContactId}
+                onchange={handleContactChange}>
+            </lightning-record-picker>
+        </div>
+   
+</template>

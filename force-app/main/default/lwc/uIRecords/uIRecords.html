@@ -1,0 +1,40 @@
+<template>
+    <lightning-record-edit-form record-id={recordId} object-api-name="Contact"
+            onsuccess={handleSuccess} onsubmit ={handleSubmit}>
+        <lightning-messages>
+        </lightning-messages>
+        <lightning-output-field field-name="AccountId">
+        </lightning-output-field>
+        <lightning-input-field field-name="FirstName">
+        </lightning-input-field>
+        <lightning-input-field field-name="LastName">
+        </lightning-input-field>
+        <lightning-input-field field-name="Email">
+        </lightning-input-field>
+        <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update">
+        </lightning-button>
+    </lightning-record-edit-form>
+    <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+        <div class="slds-col slds-size_6-of-6">
+
+            <lightning-accordion-section class="slds-section__title "
+                style="padding-bottom: 0rem; font-size: 1rem;" title={ParentTitle} label={ParentTitle}
+                name="Parent">
+
+                <lightning-record-edit-form object-api-name={objectName} record-id={recordId}>
+                    <lightning-layout  multiple-rows>
+                       
+                    <template for:each={parentOpportunityFields} for:item="opportunity">
+                        <lightning-layout-item key={opportunity} size="12" padding="around-small">
+                        <lightning-input-field key={opportunity} field-name={opportunity.fieldApiName}
+                            label={opportunity.fieldLabel} onchange={handleBooleanChange}>
+                        </lightning-input-field>
+                        </lightning-layout-item>
+                    </template>
+                    
+                    </lightning-layout>
+                </lightning-record-edit-form>
+            </lightning-accordion-section>
+            </div>
+            </lightning-accordion>
+</template>

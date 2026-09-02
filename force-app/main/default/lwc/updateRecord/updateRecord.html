@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="Update  Candidate Record" icon-name="standard:record">
+        <div class="slds-m-around_medium">
+            <lightning-input label="Name" onchange={handleNameChange} class="slds-m-bottom_x-small">
+
+            </lightning-input>
+            <lightning-input label="Party" type="string" onchange={handleNameChange} class="slds-m-bottom_x-small">
+
+            </lightning-input>
+ 
+            <lightning-input label="ConstituencyName" type="string" onchange={handleNameChange} class="slds-m-bottom_x-small">
+
+            </lightning-input>
+            <lightning-input label="Election" type="integer" onchange={handleNameChange} class="slds-m-bottom_x-small">
+
+            </lightning-input>
+ 
+            <lightning-button label="Update  Candidate" variant="brand" onclick={updateCandidate}></lightning-button>
+        </div>
+    </lightning-card>
+</template>

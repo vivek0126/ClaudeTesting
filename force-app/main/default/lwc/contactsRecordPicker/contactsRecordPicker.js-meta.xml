@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+   <isExposed>true</isExposed>
+
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+
+            <!-- JSON input from Flow -->
+            <property
+                name="contactJson"
+                type="String"
+                
+                label="Contact List (JSON)" />
+
+            <!-- Output -->
+            <property
+                name="selectedContact"
+                type="String"
+                role="outputOnly"
+                label="Selected Contact Id" />
+
+        </targetConfig>
+    </targetConfigs>
+
+</LightningComponentBundle>

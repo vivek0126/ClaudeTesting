@@ -1,0 +1,750 @@
+<template>
+    <lightning-card>
+      <div class="slds-section slds-is-open" data-id={id} style="margin-top:-45px">
+        <h3 class="slds-section__title">
+          <button type="button" aria-controls={id} class="slds-button slds-section__title-action" 
+              data-buttonid={id} onclick={toggleSection} style="height:42px">
+            <lightning-icon icon-name="utility:switch" alternative-text="button icon" size="x-small" 
+                class="slds-section__title-action-icon slds-button__icon_left">
+            </lightning-icon>
+            <span class="slds-truncate" title={Title}>{Title}</span>
+          </button>
+        </h3>
+        <div class="slds-section__content">
+          <slot>
+            <template lwc:if={_enableEventScreen}>
+              <div class="slds-grid slds-wrap slds-p-around_xx-small" style="margin-top:-15px">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2 slds-p-around_x-small">
+                  <span>
+                    <lightning-checkbox-group name="Checkbox Group" label="Business Unit" options={_BUOptions} required 
+                        value={selectedBUs} onchange={handleChange}>
+                    </lightning-checkbox-group>
+                    <lightning-input type="date" label="Event Start Date" min={todayDate} class="slds-m-top_x-small" 
+                        message-when-range-underflow="Event Start Date should not be less than today date." required 
+                        value={updatedSalesOpsRequestObj.Event_Date__c} onchange={handleChange}>
+                    </lightning-input>
+                    <template lwc:if={startDateBoolean}>
+                      <div style="color: #FF0000;font-size:13px;">{startDateWarning}</div>
+                    </template>
+                    <lightning-input type="time" label="Event Start Time" class="slds-m-top_x-small" 
+                      value={updatedSalesOpsRequestObj.Event_Time__c} onchange={handleChange}>
+                    </lightning-input>
+                    <lightning-input type="date" label="Event End Date" required 
+                        min={endDate} message-when-range-underflow={endDateWarning} 
+                        value={updatedSalesOpsRequestObj.Meeting_End_Date__c} onchange={handleChange}>
+                    </lightning-input>
+                    <lightning-input type="time" label="Event End Time" 
+                         value={updatedSalesOpsRequestObj.End_Time__c} onchange={handleChange}>
+                    </lightning-input>
+                    <lightning-input type="text" label="Sales Sector" required
+                          value={updatedSalesOpsRequestObj.Sales_Sector__c} onchange={handleChange} maxlength="30">
+                      </lightning-input>
+                  </span>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2 slds-p-around_x-small">
+                  <span>
+                      <lightning-input label="Requestor" value={requestor} onchange={handleChange}></lightning-input>
+                      <lightning-input label="Event Name" value={updatedSalesOpsRequestObj.AEA_Name_of_the_Event__c} 
+                          onchange={handleChange}>
+                      </lightning-input>
+                      <lightning-input type="date" label="Requested Delivery Date" required 
+                          min={deliveryDate_min_11} message-when-range-underflow={deliveryDateWarning_min_11} 
+                          max={deliveryDate} message-when-range-overflow={deliveryDateWarning} 
+                          value={updatedSalesOpsRequestObj.Delivery_Date__c} onchange={handleChange}>
+                      </lightning-input>
+                      <template lwc:if={Min_11_DateBoolean}>
+                      <div style="color: #FF0000;font-size:13px;">{RequestedDateWarning}</div>
+                    </template>
+                      <lightning-input type="time" label="Delivery Time" 
+                          value={updatedSalesOpsRequestObj.Delivery_Time__c} onchange={handleChange}>
+                      </lightning-input>
+                      <lightning-input type="date" label="Return Pick Up Date" required 
+                          min={pickupDateMin} message-when-range-underflow={pickupDateWarning} 
+                          max={pickupDate} message-when-range-overflow={pickupDateWarning} 
+                          value={updatedSalesOpsRequestObj.Preferred_Pickup_Date__c} onchange={handleChange}>
+                      </lightning-input>
+                      <lightning-input type="time" label="Pick-Up Time" 
+                          value={updatedSalesOpsRequestObj.Pick_up_Time__c} onchange={handleChange}>
+                      </lightning-input>
+                  </span>
+                </div>
+              </div>
+            </template>
+            <template lwc:elseif={_enableShippingScreen}>
+              <div class="slds-grid slds-wrap slds-p-around_xx-small" style="margin-top:-15px">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2 slds-p-around_x-small">
+                  <span>
+                    <lightning-record-picker label="Receiver" placeholder="Search Receiver..." 
+                         value={updatedSalesOpsRequestObj.Receiver__c} required="true" onchange={handleChange} 
+                         object-api-name="User">
+                    </lightning-record-picker>
+                    <lightning-input type="Email" label="Email" value={updatedSalesOpsRequestObj.Receiver_Email__c} 
+                         onchange={handleChange}>
+                    </lightning-input>
+                    <lightning-input label="Primary Address Line 1" value={updatedSalesOpsRequestObj.Street__c} required="true" 
+                         onchange={handleChange}>
+                    </lightning-input>
+                    <lightning-input label="Primary City" value={updatedSalesOpsRequestObj.City__c} required 
+                        onchange={handleChange}>
+                    </lightning-input>
+                    <template lwc:if={_stateRequired}>
+                      <template lwc:if={usaStateRequired}>
+                        <lightning-combobox label="Primary State" options={_stateOptions} value={updatedSalesOpsRequestObj.State__c} 
+                            onchange={handleChange} required>
+                        </lightning-combobox>
+                      </template>
+                      <template lwc:if={stateNotRequired}>
+                        <lightning-combobox label="Primary State" options={_stateOptions} value={updatedSalesOpsRequestObj.State__c} 
+                            onchange={handleChange}>
+                        </lightning-combobox>
+                      </template>
+                    </template>
+                    <lightning-input label="Additional Shipping Instructions" value={updatedSalesOpsRequestObj.Delivery_Instructions__c} 
+                         onchange={handleChange}>
+                    </lightning-input>
+                  </span>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2 slds-p-around_x-small">
+                  <span>
+                      <lightning-input label="Phone Number" type="tel" value={updatedSalesOpsRequestObj.Receiver_Phone_number__c} 
+                          required="true" onchange={handleChange}>
+                      </lightning-input>
+                      <lightning-combobox label="Venue Type" options={businessOrResidenceOptions} required="true" 
+                          value={updatedSalesOpsRequestObj.Venue_Type__c} onchange={handleChange}>
+                      </lightning-combobox>
+                      <lightning-input label="Primary Address Line 2" value={updatedSalesOpsRequestObj.Primary_Address_Line_2__c} 
+                          onchange={handleChange}>
+                      </lightning-input>
+                      <lightning-combobox label="Primary Country" value={updatedSalesOpsRequestObj.Shipping_Country__c} 
+                          onchange={handleChange} options={_countryOptions} required="true">
+                      </lightning-combobox>
+                      <lightning-input label="Primary Zip/Postal Code" value={updatedSalesOpsRequestObj.Zip_Postal_Code__c} 
+                          required="true" onchange={handleChange}>
+                      </lightning-input>
+                  </span>
+                </div>
+              </div>
+            </template>
+          </slot>
+        </div>
+      </div>
+      <hr class="slds-m-horizontal" style="margin-left: -16px; margin-right: -16px; margin-bottom: 10px; margin-top: 5px">
+      <div class="slds-grid slds-grid_align-end">
+        <div class="slds-col">
+          
+          <lightning-button label={screenSetup.Back} title="Non-primary action" onclick={Back_Next_Handler} 
+              class="slds-m-right_x-small" variant="brand-outline" data-action={screenSetup.Back} 
+              disabled={screenSetup.buttonDisabled}>
+          </lightning-button>
+      
+        </div>
+        <div class="slds-col ">
+          <lightning-button variant="brand" label={screenSetup.Next} title="Primary action" onclick={Back_Next_Handler} 
+              class="" data-action={screenSetup.Next} disabled={screenSetup.buttonDisabled}>
+          </lightning-button>
+        </div>
+      </div>
+    </lightning-card>
+        <!-- const field = this.template.querySelector(`lightning-input[label="${fieldLabel}"]`);
+        if (field) {
+            field.reportValidity(); // This will clear any validation messages if the field is now valid
+        }Contact your Salesforce admin about this error. The 'BACK' navigation option isn't supported on this screen. Replace it with one of the available navigation options: NEXT
+        {
+    "SC01": {
+        "models": [
+            {
+                "modelSetting": {
+                    "Id": "m17Dh000000CahyIAC",
+                    "DeveloperName": "Vascular_Flex",
+                    "Screen__c": "SC01",
+                    "Model_Type__c": "Vascular Flex",
+                    "Label__c": "Vascular Flex",
+                    "Help_Text__c": "You're responsible for finding coverage to run this simulator. More information will be sent after you submit your request. This Includes: 1 Table Riser, 1 Demo Bag, 1 Brochure Bag, Gore Table Drape, Extension Cord, HDMI Cord, Power Strip",
+                    "Order__c": 5,
+                    "Max_Quantity__c": 20,
+                    "Simulator_Group__c": "Vascular Flex",
+                    "Is_Simulator_Team__c": false
+                },
+                "index": 0,
+                "_quantityOptions": [
+                    {
+                        "label": "0",
+                        "value": "0"
+                    },
+                    {
+                        "label": "1",
+                        "value": "1"
+                    },
+                    {
+                        "label": "2",
+                        "value": "2"
+                    },
+                    {
+                        "label": "3",
+                        "value": "3"
+                    },
+                    {
+                        "label": "4",
+                        "value": "4"
+                    },
+                    {
+                        "label": "5",
+                        "value": "5"
+                    },
+                    {
+                        "label": "6",
+                        "value": "6"
+                    },
+                    {
+                        "label": "7",
+                        "value": "7"
+                    },
+                    {
+                        "label": "8",
+                        "value": "8"
+                    },
+                    {
+                        "label": "9",
+                        "value": "9"
+                    },
+                    {
+                        "label": "10",
+                        "value": "10"
+                    },
+                    {
+                        "label": "11",
+                        "value": "11"
+                    },
+                    {
+                        "label": "12",
+                        "value": "12"
+                    },
+                    {
+                        "label": "13",
+                        "value": "13"
+                    },
+                    {
+                        "label": "14",
+                        "value": "14"
+                    },
+                    {
+                        "label": "15",
+                        "value": "15"
+                    },
+                    {
+                        "label": "16",
+                        "value": "16"
+                    },
+                    {
+                        "label": "17",
+                        "value": "17"
+                    },
+                    {
+                        "label": "18",
+                        "value": "18"
+                    },
+                    {
+                        "label": "19",
+                        "value": "19"
+                    },
+                    {
+                        "label": "20",
+                        "value": "20"
+                    }
+                ],
+                "selecetedQuantity": "0"
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh000000Cai8IAC",
+                    "DeveloperName": "Heart_Flex",
+                    "Screen__c": "SC01",
+                    "Model_Type__c": "Structural Heart Flex",
+                    "Label__c": "Structural Heart Flex",
+                    "Order__c": 10,
+                    "Max_Quantity__c": 4,
+                    "Simulator_Group__c": "Structural Heart Flex",
+                    "Is_Simulator_Team__c": false
+                },
+                "index": 1,
+                "_quantityOptions": [
+                    {
+                        "label": "0",
+                        "value": "0"
+                    },
+                    {
+                        "label": "1",
+                        "value": "1"
+                    },
+                    {
+                        "label": "2",
+                        "value": "2"
+                    },
+                    {
+                        "label": "3",
+                        "value": "3"
+                    },
+                    {
+                        "label": "4",
+                        "value": "4"
+                    }
+                ],
+                "selecetedQuantity": "0"
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh000000CaiAIAS",
+                    "DeveloperName": "Heart_TabPro",
+                    "Screen__c": "SC01",
+                    "Model_Type__c": "Structural Heart Tab Pro",
+                    "Label__c": "Structural Heart Tab Pro",
+                    "Order__c": 15,
+                    "Max_Quantity__c": 10,
+                    "Simulator_Group__c": "Structural Heart Tab Pro",
+                    "Is_Simulator_Team__c": false
+                },
+                "index": 2,
+                "_quantityOptions": [
+                    {
+                        "label": "0",
+                        "value": "0"
+                    },
+                    {
+                        "label": "1",
+                        "value": "1"
+                    },
+                    {
+                        "label": "2",
+                        "value": "2"
+                    },
+                    {
+                        "label": "3",
+                        "value": "3"
+                    },
+                    {
+                        "label": "4",
+                        "value": "4"
+                    },
+                    {
+                        "label": "5",
+                        "value": "5"
+                    },
+                    {
+                        "label": "6",
+                        "value": "6"
+                    },
+                    {
+                        "label": "7",
+                        "value": "7"
+                    },
+                    {
+                        "label": "8",
+                        "value": "8"
+                    },
+                    {
+                        "label": "9",
+                        "value": "9"
+                    },
+                    {
+                        "label": "10",
+                        "value": "10"
+                    }
+                ],
+                "selecetedQuantity": "0"
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh000000Cai9IAC",
+                    "DeveloperName": "Heart_GCA_Benchtop_Wet_Model",
+                    "Screen__c": "SC01",
+                    "Model_Type__c": "Structural Heart (GCA Benchtop) Wet Model",
+                    "Label__c": "Structural Heart (GCA Benchtop) Wet Model",
+                    "Order__c": 20,
+                    "Max_Quantity__c": 4,
+                    "Simulator_Group__c": "Structural Heart (GCA Benchtop) Wet Model",
+                    "Is_Simulator_Team__c": false
+                },
+                "index": 3,
+                "_quantityOptions": [
+                    {
+                        "label": "0",
+                        "value": "0"
+                    },
+                    {
+                        "label": "1",
+                        "value": "1"
+                    },
+                    {
+                        "label": "2",
+                        "value": "2"
+                    },
+                    {
+                        "label": "3",
+                        "value": "3"
+                    },
+                    {
+                        "label": "4",
+                        "value": "4"
+                    }
+                ],
+                "selecetedQuantity": "0"
+            }
+        ],
+        "screen": "SC01",
+        "needPeripheral": true
+    },
+    "SC02": {
+        "models": [
+            {
+                "dependentModels": [
+                    {
+                        "modelSetting": {
+                            "Id": "m17Dh000000CaimIAC",
+                            "DeveloperName": "PE_AAA_Abdomen_Kit",
+                            "Screen__c": "SC02",
+                            "Model_Type__c": "AAA Abdominal Kit",
+                            "Label__c": "How many Physician Experiences do you want?",
+                            "Help_Text__c": "Each Experience Includes: 4 Large Needle Suture, 1 AAA Graft, 1 Abdominal Aortic Aneurysm Bio Tissue",
+                            "Order__c": 5,
+                            "Depends_On__c": "AAA Abdomen Kit",
+                            "Max_Quantity__c": 30,
+                            "Simulator_Group__c": "Physician Experience",
+                            "Default_Quantity__c": 5,
+                            "Is_Simulator_Team__c": false
+                        }
+                    }
+                ],
+                "modelSetting": {
+                    "Id": "m17Dh000000CaiDIAS",
+                    "DeveloperName": "AAA_Abdomen_Kit",
+                    "Screen__c": "SC02",
+                    "Model_Type__c": "AAA Abdominal Kit",
+                    "Label__c": "AAA Abdomen Kit",
+                    "Help_Text__c": "This Includes: 1 Abdomen Simulator, 1 Abdomen Instrument Kit, 1 Lamp, 1 Large Surgical Table Drape, 1 Large Jar, 1 Abdomen Pump, 1 Bowl, 1 Extension Cord",
+                    "Order__c": 5,
+                    "Max_Quantity__c": 8,
+                    "Simulator_Group__c": "Peripheral Open Simulator",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "dependentModels": [
+                    {
+                        "modelSetting": {
+                            "Id": "m17Dh000000CainIAC",
+                            "DeveloperName": "PE_AV_Arm_Kit",
+                            "Screen__c": "SC02",
+                            "Model_Type__c": "AV (Arm) Kit",
+                            "Label__c": "How many Physician Experiences do you want?",
+                            "Help_Text__c": "Each Experience Includes: 4 Small Needle Sutures, 1 AV Graft, Arm Artery Pack (Up to 5 Procedures)",
+                            "Order__c": 10,
+                            "Depends_On__c": "AV (Arm) Kit",
+                            "Max_Quantity__c": 30,
+                            "Simulator_Group__c": "Physician Experience",
+                            "Default_Quantity__c": 5,
+                            "Is_Simulator_Team__c": false
+                        }
+                    }
+                ],
+                "modelSetting": {
+                    "Id": "m17Dh000000CaiEIAS",
+                    "DeveloperName": "AV_Arm_Kit",
+                    "Screen__c": "SC02",
+                    "Model_Type__c": "AV (Arm) Kit",
+                    "Label__c": "AV (Arm) Kit",
+                    "Help_Text__c": "This Includes: 1 Arm Simulator, 1 Arm Simulator Skin, 1 Standard Instrument Kit, 1 Lamp, 1 Large Surgical Table Drape, 1 Small Jar, 1 Standard Pump, 1 Bowl, 1 Extension Cord",
+                    "Order__c": 10,
+                    "Max_Quantity__c": 2,
+                    "Simulator_Group__c": "Peripheral Open Simulator",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "dependentModels": [
+                    {
+                        "modelSetting": {
+                            "Id": "m17Dh000000CaioIAC",
+                            "DeveloperName": "PE_Head_Carotid_Kit",
+                            "Screen__c": "SC02",
+                            "Model_Type__c": "Head (Carotid) Kit",
+                            "Label__c": "How many Physician Experiences do you want?",
+                            "Help_Text__c": "Each Experience Includes: 2 Small Needle Sutures, 1 Carotid Patch, Carotid Artery Bio Tissue",
+                            "Order__c": 15,
+                            "Depends_On__c": "Head (Carotid) Kit",
+                            "Max_Quantity__c": 30,
+                            "Simulator_Group__c": "Physician Experience",
+                            "Default_Quantity__c": 5,
+                            "Is_Simulator_Team__c": false
+                        }
+                    }
+                ],
+                "modelSetting": {
+                    "Id": "m17Dh000000CaiFIAS",
+                    "DeveloperName": "Head_Carotid_Kit",
+                    "Screen__c": "SC02",
+                    "Model_Type__c": "Head (Carotid) Kit",
+                    "Label__c": "Head (Carotid) Kit",
+                    "Help_Text__c": "This Includes: 1 Head Simulator, 1 Standard Instrument Kit, 1 Lamp, 1 Small Surgical Table Drape, 1 Small Jar, 1 Standard Pump, 1 Bowl, 1 Extension Cord",
+                    "Order__c": 15,
+                    "Max_Quantity__c": 2,
+                    "Simulator_Group__c": "Peripheral Open Simulator",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "dependentModels": [
+                    {
+                        "modelSetting": {
+                            "Id": "m17Dh000000CaipIAC",
+                            "DeveloperName": "PE_Leg_Femoral_Kit",
+                            "Screen__c": "SC02",
+                            "Model_Type__c": "Leg (Femoral) Kit",
+                            "Label__c": "How many Physician Experiences do you want?",
+                            "Help_Text__c": "Each Experience Includes: 2 Small Needle Sutures, 1 Femoral Patch, 2 Femoral Artery Bio Tissue",
+                            "Order__c": 20,
+                            "Depends_On__c": "Leg (Femoral) Kit",
+                            "Max_Quantity__c": 30,
+                            "Simulator_Group__c": "Physician Experience",
+                            "Default_Quantity__c": 5,
+                            "Is_Simulator_Team__c": false
+                        }
+                    }
+                ],
+                "modelSetting": {
+                    "Id": "m17Dh000000CaiGIAS",
+                    "DeveloperName": "Leg_Femoral_Kit",
+                    "Screen__c": "SC02",
+                    "Model_Type__c": "Leg (Femoral) Kit",
+                    "Label__c": "Leg (Femoral) Kit",
+                    "Help_Text__c": "This Includes: 1 Leg Simulator, 1 Standard Instrument Kit, 1 Lamp, 1 Large Surgical Table Drape, 1 Small Jar, 1 Standard Pump, 1 Bowl, 1 Extension Cord",
+                    "Order__c": 20,
+                    "Max_Quantity__c": 4,
+                    "Simulator_Group__c": "Peripheral Open Simulator",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "dependentModels": [
+                    {
+                        "modelSetting": {
+                            "Id": "m17Dh000000CaisIAC",
+                            "DeveloperName": "PE_Wet_Box_Carotid",
+                            "Screen__c": "SC02",
+                            "Model_Type__c": "Wet Box (Carotid)",
+                            "Label__c": "How many Carotid Physician Experiences do you want?",
+                            "Help_Text__c": "Each Experience Includes: 2 Small Needle Sutures, 1 Carotid Patch, 1 Carotid Artery Bio Tissue",
+                            "Order__c": 25,
+                            "Depends_On__c": "Wet Box Kit",
+                            "Max_Quantity__c": 30,
+                            "Simulator_Group__c": "Physician Experience",
+                            "Is_Simulator_Team__c": false
+                        }
+                    },
+                    {
+                        "modelSetting": {
+                            "Id": "m17Dh000000CairIAC",
+                            "DeveloperName": "PE_WB_Femoral_with_Artery_BioTissue",
+                            "Screen__c": "SC02",
+                            "Model_Type__c": "Wet Box (Femoral with Artery Bio Tissue)",
+                            "Label__c": "How many Femoral - Bio Tissue Physician Experiences do you want?",
+                            "Help_Text__c": "Each Experience Includes: 2 Small Needle Sutures, 1 Femoral Patch, 1 Femoral Artery Bio Tissue",
+                            "Order__c": 26,
+                            "Depends_On__c": "Wet Box Kit",
+                            "Max_Quantity__c": 30,
+                            "Simulator_Group__c": "Physician Experience",
+                            "Is_Simulator_Team__c": false
+                        }
+                    },
+                    {
+                        "modelSetting": {
+                            "Id": "m17Dh000000CaiqIAC",
+                            "DeveloperName": "PE_WB_Embedded_Femoral_Arteries",
+                            "Screen__c": "SC02",
+                            "Model_Type__c": "Wet Box (Femoral with Embedded Femoral Arteries)",
+                            "Label__c": "How many Femoral - Dermis Slab Physician Experiences do you want?",
+                            "Help_Text__c": "Each Experience Includes: 2 Small Needle Sutures, 1 Femoral Patch, Embedded Femoral Arteries with Dermis (Up to 7 Procedures)",
+                            "Order__c": 27,
+                            "Depends_On__c": "Wet Box Kit",
+                            "Max_Quantity__c": 30,
+                            "Simulator_Group__c": "Physician Experience",
+                            "Is_Simulator_Team__c": false
+                        }
+                    }
+                ],
+                "modelSetting": {
+                    "Id": "m17Dh000000CaiHIAS",
+                    "DeveloperName": "Wet_Box_Kit",
+                    "Screen__c": "SC02",
+                    "Model_Type__c": "Wet Box Kit",
+                    "Label__c": "Wet Box Kit",
+                    "Help_Text__c": "This Includes: 1 Wet Box Simulator, 1 Standard Instrument Kit, 1 Lamp, 1 Large Surgical Table Drape, 1 Bowl, 1 Extension Cord",
+                    "Order__c": 25,
+                    "Max_Quantity__c": 22,
+                    "Simulator_Group__c": "Peripheral Open Simulator",
+                    "Is_Simulator_Team__c": false
+                }
+            }
+        ],
+        "screen": "SC02"
+    },
+    "SC03": {
+        "models": [
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OlnIAE",
+                    "DeveloperName": "Blue_Surgical_Table_Drapes",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Blue Surgical Table Drapes",
+                    "Label__c": "Blue Surgical Table Drapes",
+                    "Order__c": 5,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OltIAE",
+                    "DeveloperName": "Table_Risers",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Table Risers",
+                    "Label__c": "Table Risers",
+                    "Order__c": 10,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OlsIAE",
+                    "DeveloperName": "Gore_Table_Drapes",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Gore Table Drapes",
+                    "Label__c": "Gore Table Drapes",
+                    "Order__c": 15,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OllIAE",
+                    "DeveloperName": "Abdominal_Aortic_Aneurysm_Bio_Tissue",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Abdominal Aortic Aneurysm Bio Tissue",
+                    "Label__c": "Abdominal Aortic Aneurysm Bio Tissue",
+                    "Order__c": 20,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": true
+                }
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OlmIAE",
+                    "DeveloperName": "Arm_Artery_Pack",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Arm Artery Pack",
+                    "Label__c": "Arm Artery Pack",
+                    "Order__c": 25,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OloIAE",
+                    "DeveloperName": "Carotid_Artery_Bio_Tissue",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Carotid Artery Bio Tissue",
+                    "Label__c": "Carotid Artery Bio Tissue",
+                    "Order__c": 30,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OlrIAE",
+                    "DeveloperName": "Femoral_Artery_Bio_Tissue",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Femoral Artery Bio Tissue",
+                    "Label__c": "Femoral Artery Bio Tissue",
+                    "Order__c": 35,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OlpIAE",
+                    "DeveloperName": "Embedded_Femoral_Arteries",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Embedded Femoral Arteries with Dermis",
+                    "Label__c": "Embedded Femoral Arteries with Dermis",
+                    "Order__c": 40,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": false
+                }
+            },
+            {
+                "modelSetting": {
+                    "Id": "m17Dh0000008OlqIAE",
+                    "DeveloperName": "Expediting_Fee",
+                    "Screen__c": "SC03",
+                    "Model_Type__c": "Expediting Fee",
+                    "Label__c": "Expediting Fee",
+                    "Order__c": 45,
+                    "Max_Quantity__c": 30,
+                    "Simulator_Group__c": "Accessories",
+                    "Is_Simulator_Team__c": false
+                }
+            }
+        ],
+        "screen": "SC03"
+    }
+}.
+ getScreenSetup() {
+
+        screenSetup({})
+            .then(data => {
+                let screenMap = JSON.parse(JSON.stringify(data))
+                console.log('screenMap>>', screenMap);
+             
+                  //screenMap =  screenMap.filter(item => !item.modelSetting.Is_Simulator_Team__c);
+                  console.log('screenMap>>>',screenMap);
+                
+               console.log('test');
+                this.config = screenMap;
+                this.generateData = screenMap.SC01;
+                this.generateData.needPeripheral = true;
+                this.generateData.models.forEach((model, index) => {
+                    let qtyOption = [];
+                    model.index = index;
+                    let maxQty = parseInt(model.modelSetting.Max_Quantity__c)
+                    for (let index = 0; index <= maxQty; index++) {
+                        let qty = index.toString();
+                        qtyOption.push({ label: qty, value: qty });
+                    }
+                    model._quantityOptions = qtyOption;
+                    model.selecetedQuantity = "0";
+                    if (model.hasOwnProperty('dependentModels')) {
+                        model.dependentModels.forEach((dependentModel, index) => {
+                            dependentModel.index = index;
+                            dependentModel.selecetedQuantity = dependentModel.Default_Quantity__c;
+                        })
+                    }
+                });
+                this.loaded();
+            }).catch(error => {
+                this.loaded();
+                this.showToast('Error', 'Error occurred while doing server call (MPD_NASimulatorController.getScreenSetup)', JSON.stringify(error));
+            })
+    }-->
+  </template>
