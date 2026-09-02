@@ -4,6 +4,7 @@ global class DynamicPicklist implements System.callable{
     global Object call(String action,Map<String,object> args){
     
     Map<String,Object> input = (Map<String,Object>) args.get('input');
+    Map<String,Object> input1 = (Map<String,Object>) args.get('input1');
     
     Map<String,Object> options = (Map<String,Object>) args.get('options');
     
